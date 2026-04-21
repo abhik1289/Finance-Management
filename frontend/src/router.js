@@ -8,39 +8,51 @@ import ExpensesPage from "./pages/ExpensesPage";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import ProfilePage from "./pages/ProfilePage";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 
 const router = createBrowserRouter([
   {
-    element: createElement(MainLayout),
+    element: createElement(ProtectedRoute),
     children: [
       {
-        path: "/",
-        element: createElement(HomePage),
-      },
-      {
-        path: "/category",
-        element: createElement(CategoryPage),
-      },
-      {
-        path: "/expenses",
-        element: createElement(ExpensesPage),
-      },
-      {
-        path: "/profile",
-        element: createElement(ProfilePage),
+        element: createElement(MainLayout),
+        children: [
+          {
+            path: "/",
+            element: createElement(HomePage),
+          },
+          {
+            path: "/category",
+            element: createElement(CategoryPage),
+          },
+          {
+            path: "/expenses",
+            element: createElement(ExpensesPage),
+          },
+          {
+            path: "/profile",
+            element: createElement(ProfilePage),
+          },
+        ],
       },
     ],
   },
   {
-    element: createElement(AuthLayout),
+    element: createElement(PublicOnlyRoute),
     children: [
       {
-        path: "/sign-in",
-        element: createElement(SignInPage),
-      },
-      {
-        path: "/sign-up",
-        element: createElement(SignUpPage),
+        element: createElement(AuthLayout),
+        children: [
+          {
+            path: "/sign-in",
+            element: createElement(SignInPage),
+          },
+          {
+            path: "/sign-up",
+            element: createElement(SignUpPage),
+          },
+        ],
       },
     ],
   },

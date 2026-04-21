@@ -1,4 +1,4 @@
-import Button from '../common/Button'
+import { LoaderCircle, Pencil, Trash2 } from 'lucide-react'
 
 const formatDate = (date) => {
   return new Intl.DateTimeFormat('en-IN', {
@@ -8,25 +8,24 @@ const formatDate = (date) => {
   }).format(new Date(date))
 }
 
-export default function CategoryTable({ categories, onEdit }) {
+export default function CategoryTable({
+  categories,
+  deletingId = null,
+  onEdit,
+  onDelete,
+}) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 text-left">
+        <table className="min-w-[640px] w-full divide-y divide-gray-200 text-left">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Sl No
-              </th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Sl No</th>
               <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
                 Category Name
               </th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Date
-              </th>
-              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Action
-              </th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Created</th>
+              <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">Action</th>
             </tr>
           </thead>
 
@@ -39,18 +38,35 @@ export default function CategoryTable({ categories, onEdit }) {
               </tr>
             ) : (
               categories.map((category, index) => (
-                <tr key={category.id} className="hover:bg-gray-50/80">
+                <tr key={category.id} className="hover:bg-violet-50/30">
                   <td className="px-4 py-3 text-sm text-gray-700">{index + 1}</td>
                   <td className="px-4 py-3 text-sm font-medium text-gray-900">{category.title}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{formatDate(category.createdAt)}</td>
                   <td className="px-4 py-3">
-                    <Button
-                      type="button"
-                      className="h-8 rounded-md bg-violet-50 px-3 text-xs font-semibold text-violet-700 hover:bg-violet-100"
-                      onClick={() => onEdit(category)}
-                    >
-                      Edit
-                    </Button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onEdit(category)}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-violet-200 text-violet-700 transition hover:bg-violet-50"
+                        aria-label="Edit category"
+                      >
+                        <Pencil size={14} />
+                      </button>
+
+                      <button
+                        type="button"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-red-200 text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        onClick={() => onDelete(category)}
+                        disabled={deletingId === category.id}
+                        aria-label="Delete category"
+                      >
+                        {deletingId === category.id ? (
+                          <LoaderCircle size={14} className="animate-spin" />
+                        ) : (
+                          <Trash2 size={14} />
+                        )}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))

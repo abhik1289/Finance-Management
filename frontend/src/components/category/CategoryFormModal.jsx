@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { LoaderCircle, X } from 'lucide-react'
 import Button from '../common/Button'
 
 export default function CategoryFormModal({
@@ -8,6 +8,7 @@ export default function CategoryFormModal({
   initialTitle = '',
   onClose,
   onSubmit,
+  isSubmitting = false,
 }) {
   const [title, setTitle] = useState(initialTitle)
 
@@ -21,15 +22,18 @@ export default function CategoryFormModal({
     event.preventDefault()
     const trimmedTitle = title.trim()
 
-    if (!trimmedTitle) {
+    if (!trimmedTitle || isSubmitting) {
       return
     }
 
     onSubmit(trimmedTitle)
-    setTitle('')
   }
 
   const handleClose = () => {
+    if (isSubmitting) {
+      return
+    }
+
     setTitle('')
     onClose()
   }
@@ -52,8 +56,9 @@ export default function CategoryFormModal({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-md p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+            className="rounded-md p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-60"
             aria-label="Close dialog"
+            disabled={isSubmitting}
           >
             <X size={18} />
           </button>
@@ -61,10 +66,7 @@ export default function CategoryFormModal({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="text-left">
-            <label
-              htmlFor="category-title"
-              className="mb-1.5 block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="category-title" className="mb-1.5 block text-sm font-medium text-gray-700">
               Title
             </label>
             <input
@@ -75,6 +77,7 @@ export default function CategoryFormModal({
               placeholder="e.g. Grocery"
               className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
               autoFocus
+              disabled={isSubmitting}
             />
           </div>
 
@@ -83,14 +86,16 @@ export default function CategoryFormModal({
               type="button"
               className="border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
               onClick={handleClose}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-60"
-              disabled={!title.trim()}
+              className="gap-2 bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-60"
+              disabled={!title.trim() || isSubmitting}
             >
+              {isSubmitting ? <LoaderCircle size={14} className="animate-spin" /> : null}
               {isEdit ? 'Save changes' : 'Submit'}
             </Button>
           </div>
